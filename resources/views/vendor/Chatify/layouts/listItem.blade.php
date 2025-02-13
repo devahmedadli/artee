@@ -36,8 +36,13 @@
                 @if ($user->active_status)
                     <span class="activeStatus"></span>
                 @endif
-                <div class="avatar av-m" style="background-image: url('{{ $user->avatar }}');">
-                </div>
+                @if (pathinfo($user->avatar, PATHINFO_EXTENSION) !== '')
+                    <div class="avatar av-m" style="background-image: url('{{ asset($user->avatar) }}');">
+                    </div>
+                @else
+                    <div class="avatar av-m" style="background-image: url('{{ asset('assets/imgs/avatar.png') }}');">
+                    </div>
+                @endif
             </td>
             {{-- center side --}}
             <td>
@@ -71,8 +76,13 @@
         <tr data-action="0">
             {{-- Avatar side --}}
             <td>
-                <div class="avatar av-m" style="background-image: url('{{ $user->avatar }}');">
-                </div>
+                @if (pathinfo($user->avatar, PATHINFO_EXTENSION) !== '')
+                    <div class="avatar av-m" style="background-image: url('{{ asset($user->avatar) }}');">
+                    </div>
+                @else
+                    <div class="avatar av-m" style="background-image: url('{{ asset('assets/imgs/avatar.png') }}');">
+                    </div>
+                @endif
             </td>
             {{-- center side --}}
             <td>
@@ -86,5 +96,6 @@
 
 {{-- -------------------- Shared photos Item -------------------- --}}
 @if ($get == 'sharedPhoto')
+
     <div class="shared-photo chat-image" style="background-image: url('{{ $image }}')"></div>
 @endif
