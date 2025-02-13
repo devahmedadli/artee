@@ -1,0 +1,101 @@
+@extends('layouts.admin')
+@section('content')
+    <form action="{{ route('freelancers.store') }}" method="post" class="row shadow-sm border bg-white p-3"
+        enctype="multipart/form-data">
+        @csrf
+        <h2 class="mb-5 fw-bold text-muted">إدخال بيانات المستقل</h2>
+        @include('partials.errors')
+
+        <div class="col-md-6 mb-3">
+            <label for="name" class="form-label">الاسم</label>
+            <input type="text" id="name" name="name" class="form-control" required>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="email" class="form-label">البريد الالكتروني</label>
+            <input type="email" id="email" name="email" class="form-control" required>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="password" class="form-label">كلمة المرور</label>
+            <input type="password" id="password" name="password" class="form-control" required>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="phone" class="form-label">رقم الهاتف</label>
+            <input type="text" id="phone" name="phone" class="form-control">
+        </div>
+        <div class="col-md-12 mb-3">
+            <label for="bio" class="form-label">نبذة</label>
+            <textarea id="bio" name="bio" class="form-control" rows="3"></textarea>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="country" class="form-label">الدولة</label>
+            <input type="text" id="country" name="country" class="form-control">
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="website" class="form-label">الموقع الالكتروني</label>
+            <input type="url" id="website" name="website" class="form-control">
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="specification" class="form-label">التخصص</label>
+            <input type="text" id="specification" name="specification" class="form-control">
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="skills" class="form-label">المهارات</label>
+            <div class="input-group">
+                <input type="text" id="skill-input" class="form-control" placeholder="أدخل مهارة">
+                <button class="btn btn-outline-secondary" type="button" id="add-skill">إضافة</button>
+            </div>
+            <div id="skills-container" class="mt-2">
+            </div>
+            <input type="hidden" id="skills" name="skills">
+        </div>
+        <div class="text-center mt-3">
+            <input type="submit" value="حفظ" class="btn btn-success px-5">
+        </div>
+    </form>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const skillInput = document.getElementById('skill-input');
+            const addSkillBtn = document.getElementById('add-skill');
+            const skillsContainer = document.getElementById('skills-container');
+            const skillsHiddenInput = document.getElementById('skills');
+            const skills = new Set();
+
+            function updateSkills() {
+                skillsContainer.innerHTML = Array.from(skills).map(skill => 
+                    `<span class="badge bg-primary me-2 mb-2">${skill} <button type="button" class="btn-close btn-close-white ms-1" aria-label="Remove" data-skill="${skill}"></button></span>`
+                ).join('');
+                skillsHiddenInput.value = Array.from(skills).join(',');
+            }
+
+            function addSkill(skill) {
+                if (skill && !skills.has(skill)) {
+                    skills.add(skill);
+                    updateSkills();
+                    skillInput.value = '';
+                }
+            }
+
+            addSkillBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                addSkill(skillInput.value.trim());
+            });
+
+            skillInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addSkill(this.value.trim());
+                }
+            });
+
+            skillsContainer.addEventListener('click', function(e) {
+                if (e.target.classList.contains('btn-close')) {
+                    const skill = e.target.getAttribute('data-skill');
+                    skills.delete(skill);
+                    updateSkills();
+                }
+            });
+        });
+    </script>
+
+@endsection
+

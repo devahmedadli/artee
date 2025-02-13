@@ -1,0 +1,95 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 500;
+
+}
+
+
+
+body {
+    overflow-x: hidden;
+}
+
+:root {
+    --main-color: #3d5ea0;
+    --main-color-dark: #2d4880;
+    --main-color-light: #8faff0;
+    --light-gray: #f5f;
+    --darker-gray: #6c6b6b;
+    --white: #fff;
+    --black: #1a2428;
+    /*--primary-text-color: #9e9e9e;*/
+    --secondary-text-color: #757575;
+    --highlighted-text-color: #ffebee;
+    --border-radius: 20px;
+    --transition-duration: .3s;
+}
+
+.bg-main {
+    background-color: var(--main-color) !important;
+}
+
+.bg-main-light {
+    background-color: var(--main-color-light) !important;
+}
+
+.text-main {
+    color: var(--main-color) !important;
+}
+
+a {
+    text-decoration: none !important;
+}
+
+h1 {
+
+    font-size: 78px !important;
+}
+
+img {
+    object-fit: cover !important;
+}
+
+/* Sidebar */
+
+.sidebar {
+
+    background-color: var(--main-color);
+}
+
+.sidebar .links a {
+
+    color: #ffffff;
+    padding: 10px;
+    transition: all 0.2s ease-in-out;
+}
+
+.sidebar .links a:hover,
+.sidebar .links a.active {
+
+    background-color: var(--main-color-dark);
+    color: #ffffff;
+    padding: 10px;
+}
+
+.sidebar .links .sub-links {
+
+    background-color: var(--main-color-light);
+}
+
+
+
+
+/* CKEditor */
+.ck.ck-editor__editable_inline {
+
+    min-height: 300px;
+}
+
+
+/* Responsive desigh */
+
+
