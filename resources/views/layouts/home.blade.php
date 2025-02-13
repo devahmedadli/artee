@@ -62,18 +62,24 @@
             <div class="container d-flex justify-content-between align-items-center">
                 <a href="{{ route('index') }}" class="d-inline-block p-md-0 py-1 fs-5">
                     {{-- <span>{{ app()->currentLocale() . session('locale') }}</span> --}}
-                    <img src="{{ asset( $siteSettings->logo ? 'storage/' . $siteSettings->logo : 'assets/imgs/logo-nav.png') }}" alt="Artee Logo" class="img-fluid"
-                        width="60">
+                    <img src="{{ asset($siteSettings->logo ? 'storage/' . $siteSettings->logo : 'assets/imgs/logo-nav.png') }}"
+                        alt="Artee Logo" class="img-fluid" width="60">
                 </a>
                 <ul
                     class="nav-links nav-underline d-flex justify-content-center align-items-center list-unstyled m-0 d-none d-md-flex">
                     <li class="nav-link mx-md-2"><a href="{{ route('index') }}">{{ __('Home') }}</a></li>
-                    @auth
-                        <li class="nav-link mx-md-2"><a
-                                href="{{ route('customer.orders.index') }}">{{ __('Orders') }}</a></li>
-                        <li class="nav-link mx-md-2"><a href="{{ route('customer.chats') }}">{{ __('Live Chat') }}</a>
+                    @if (auth()->check() && auth()->user()->role == 'customer')
+                        <li class="nav-link mx-md-2">
+                            <a href="{{ route('customer.orders.index') }}">
+                                {{ __('Orders') }}
+                            </a>
                         </li>
-                    @endauth
+                        <li class="nav-link mx-md-2">
+                            <a href="{{ route('customer.chats') }}">
+                                {{ __('Live Chat') }}
+                            </a>
+                        </li>
+                    @endif
                     <li class="nav-link mx-md-2"><a href="{{ route('index') }}#services">{{ __('Services') }}</a></li>
                     <li class="nav-link mx-md-2"><a href="{{ route('products') }}">{{ __('Products') }}</a></li>
                     <li class="nav-link mx-md-2"><a href="{{ route('index') }}#contact-us">{{ __('Contact Us') }}</a>
@@ -82,11 +88,11 @@
 
                 <ul
                     class="nav-links d-flex justify-content-center align-items-center list-unstyled m-0 d-none d-md-flex">
-                    @if (Auth::check() && Auth::user()->role == 'customer')
+                    @if (auth()->check() && auth()->user()->role == 'customer')
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle position-relative" href="#" id="navbarDropdown"
                                 role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="{{ Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : asset('assets/imgs/avatar.png') }}"
+                                <img src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : asset('assets/imgs/avatar.png') }}"
                                     alt="User Avatar" class="rounded-circle bg-white" width="32" height="32">
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0"
@@ -129,23 +135,30 @@
             <div class="row mb-4">
                 <!-- Company Info -->
                 <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-                    <img src="{{ asset( $siteSettings->logo ? 'storage/' . $siteSettings->logo : 'assets/imgs/logo-nav.png') }}" alt="Artee Logo" class="img-fluid mb-3" width="100">
-                    <p class="text-white mb-3">{{ __('Your trusted partner for innovative solutions and quality services.') }}</p>
+                    <img src="{{ asset($siteSettings->logo ? 'storage/' . $siteSettings->logo : 'assets/imgs/logo-nav.png') }}"
+                        alt="Artee Logo" class="img-fluid mb-3" width="100">
+                    <p class="text-white mb-3">
+                        {{ __('Your trusted partner for innovative solutions and quality services.') }}</p>
                     <div class="social-links">
                         @if (isset($siteSettings->social_media['facebook']))
-                            <a href="{{ $siteSettings->social_media['facebook'] }}" target="_blank" class="text-white me-2"><i class="fab fa-facebook-f"></i></a>
+                            <a href="{{ $siteSettings->social_media['facebook'] }}" target="_blank"
+                                class="text-white me-2"><i class="fab fa-facebook-f"></i></a>
                         @endif
                         @if (isset($siteSettings->social_media['twitter']))
-                            <a href="{{ $siteSettings->social_media['twitter'] }}" target="_blank" class="text-white me-2"><i class="fab fa-twitter"></i></a>
+                            <a href="{{ $siteSettings->social_media['twitter'] }}" target="_blank"
+                                class="text-white me-2"><i class="fab fa-twitter"></i></a>
                         @endif
                         @if (isset($siteSettings->social_media['instagram']))
-                            <a href="{{ $siteSettings->social_media['instagram'] }}" target="_blank" class="text-white me-2"><i class="fab fa-instagram"></i></a>
+                            <a href="{{ $siteSettings->social_media['instagram'] }}" target="_blank"
+                                class="text-white me-2"><i class="fab fa-instagram"></i></a>
                         @endif
                         @if (isset($siteSettings->social_media['linkedin']))
-                            <a href="{{ $siteSettings->social_media['linkedin'] }}" target="_blank" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="{{ $siteSettings->social_media['linkedin'] }}" target="_blank"
+                                class="text-white"><i class="fab fa-linkedin-in"></i></a>
                         @endif
                         @if (isset($siteSettings->social_media['youtube']))
-                            <a href="{{ $siteSettings->social_media['youtube'] }}" target="_blank" class="text-white"><i class="fab fa-youtube"></i></a>
+                            <a href="{{ $siteSettings->social_media['youtube'] }}" target="_blank"
+                                class="text-white"><i class="fab fa-youtube"></i></a>
                         @endif
                     </div>
                 </div>
@@ -154,10 +167,14 @@
                 <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
                     <h5 class="text-white mb-3">{{ __('Quick Links') }}</h5>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="{{ route('index') }}" class="text-white">{{ __('Home') }}</a></li>
-                        <li class="mb-2"><a href="{{ route('products') }}" class="text-white">{{ __('Products') }}</a></li>
-                        <li class="mb-2"><a href="{{ route('index') }}#services" class="text-white">{{ __('Services') }}</a></li>
-                        <li class="mb-2"><a href="{{ route('index') }}#contact-us" class="text-white">{{ __('Contact Us') }}</a></li>
+                        <li class="mb-2"><a href="{{ route('index') }}"
+                                class="text-white">{{ __('Home') }}</a></li>
+                        <li class="mb-2"><a href="{{ route('products') }}"
+                                class="text-white">{{ __('Products') }}</a></li>
+                        <li class="mb-2"><a href="{{ route('index') }}#services"
+                                class="text-white">{{ __('Services') }}</a></li>
+                        <li class="mb-2"><a href="{{ route('index') }}#contact-us"
+                                class="text-white">{{ __('Contact Us') }}</a></li>
                     </ul>
                 </div>
 
@@ -169,7 +186,8 @@
                     @endphp
                     <ul class="list-unstyled">
                         @foreach ($services as $service)
-                            <li class="mb-2"><a href="{{ route('services', $service->id) }}" class="text-white">{{ $service->name }}</a></li>
+                            <li class="mb-2"><a href="{{ route('services', $service->id) }}"
+                                    class="text-white">{{ $service->name }}</a></li>
                         @endforeach
                     </ul>
                 </div>
@@ -178,22 +196,28 @@
                 <div class="col-lg-3 col-md-6">
                     <h5 class="text-white mb-3">{{ __('Contact Information') }}</h5>
                     <ul class="list-unstyled">
-                        <li class="mb-2 text-white"><i class="fas fa-map-marker-alt me-2"></i> {{ __('123 Street Name, City, Country') }}</li>
-                        <li class="mb-2"><a href="tel:+1234567890" class="text-white"><i class="fas fa-phone me-2"></i> +123 456 7890</a></li>
-                        <li class="mb-2"><a href="mailto:info@artee.com" class="text-white"><i class="fas fa-envelope me-2"></i> info@artee.com</a></li>
+                        <li class="mb-2 text-white"><i class="fas fa-map-marker-alt me-2"></i>
+                            {{ $siteSettings->contact['address'] }}</li>
+                        <li class="mb-2"><a href="tel:+ {{ $siteSettings->contact['phone'] }}"
+                                class="text-white"><i class="fas fa-phone me-2"></i>
+                                {{ $siteSettings->contact['phone'] }}</a></li>
+                        <li class="mb-2"><a href="mailto:{{ $siteSettings->contact['email'] }}"
+                                class="text-white"><i class="fas fa-envelope me-2"></i>
+                                {{ $siteSettings->contact['email'] }}</a></li>
                     </ul>
                 </div>
             </div>
 
             <hr class="border-white opacity-25">
-            
+
             <!-- Bottom Footer -->
             <div class="row align-items-center">
                 <div class="col-md-6 text-center text-md-start">
                     <p class="text-white mb-0">&copy; {{ date('Y') }} {{ __('Artee. All Rights Reserved.') }}</p>
                 </div>
                 <div class="col-md-6 text-center text-md-end">
-                    <a href="{{ route('terms-conditions') }}" class="text-white me-3">{{ __('Terms of Service') }}</a>
+                    <a href="{{ route('terms-conditions') }}"
+                        class="text-white me-3">{{ __('Terms of Service') }}</a>
                     <a href="{{ route('privacy') }}" class="text-white me-3">{{ __('Privacy Policy') }}</a>
                     <a href="{{ route('index') }}#contact-us" class="text-white">{{ __('Contact Us') }}</a>
                 </div>

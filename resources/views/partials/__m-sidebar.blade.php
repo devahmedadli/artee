@@ -9,8 +9,7 @@
             <li class="nav-link mb-4 mx-md-2"><a href="{{ route('index') }}#services">{{ __('Services') }}</a></li>
             <li class="nav-link mb-4 mx-md-2"><a href="{{ route('products') }}">{{ __('Products') }}</a></li>
             <li class="nav-link mb-4 mx-md-2"><a href="{{ route('index') }}#contact">{{ __('Contact Us') }}</a></li>
-            @auth
-
+            @if (auth()->check() && auth()->user()->role == 'customer')
                 <li class="nav-link mb-4 mx-md-2">
                     <a class="dropdown-item" href="{{ route('customer.account') }}">
                         {{ __('Settings') }}
@@ -26,11 +25,11 @@
                         {{ __('Live Chat') }}
                     </a>
                 </li>
-            @endauth
+            @endif
             <li class="nav-link mb-4 mx-md-2">
                 <hr class="dropdown-divider">
             </li>
-            @auth
+            @if (auth()->check() && auth()->user()->role == 'customer')
                 <li class="nav-link mb-4 mx-md-2">
 
                     <a href="{{ route('logout.post') }}" class="dropdown-item text-danger">
@@ -49,7 +48,7 @@
                         {{ __('Register') }}
                     </a>
                 </li>
-            @endauth
+            @endif
         </ul>
     </div>
 </div>
