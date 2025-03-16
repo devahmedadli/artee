@@ -1,38 +1,32 @@
 @extends('layouts.admin')
-@section('title', 'الخدمات')
+@section('title', __('Services'))
 @section('content')
 
     <div class="card services-list overflow-auto">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <a href="{{ route('services.create') }}" class="btn btn-primary">
+                {{ __('Add New Service') }}
+            </a>
+        </div>
         <!-- Card body -->
         <div class="card-body">
-            <h5 class="card-title">قائمة الخدمات <span>| الكل</span></h5>
-            {{-- Add service button --}}
-            <div>
-                <a href="{{ route('services.create') }}" class="btn btn-primary">
-                    إضافة خدمة جديدة
-                </a>
-            </div>
             <!-- Table with responsive wrapper -->
             <div class="table-responfsive">
                 <table class="table table-borderless datatable">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>الخدمة</th>
-                            <th>السعر</th>
-                            <th>الوصف</th>
-                            <th>عدد المنتجات</th>
-                            <th>الاجراء</th>
+                            <th> {{ __('Service') }}</th>
+                            <th> {{ __('Description') }}</th>
+                            <th> {{ __('Actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($services as $service)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $service->name }}</td>
-                                <td>{{ $service->price }}</td>
-                                <td>{{ $service->description }}</td>
-                                <td>{{ $service->products->count() }}</td>
+                                <td>{{ $service->{app()->getLocale() . '_name'} }}</td>
+                                <td>{{ $service->{app()->getLocale() . '_description'} }}</td>
                                 <td>
                                     {{-- <a href="{{ route('services.edit', $service->id) }}" class="btn btn-warning btn-sm">Edit</a> --}}
                                     {{-- show --}}

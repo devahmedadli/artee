@@ -7,16 +7,16 @@ use App\Models\Order;
 use App\Models\Message;
 use App\Notifications\OrderCreatedNotification;
 use App\Notifications\OrderCompletedNotification;
-
+use App\Models\ProductOrder;
 class OrderObserver
 {
     /**
      * Handle the Order "created" event.
      */
-    public function created(Order $order): void
+    public function created(ProductOrder | Order $order): void
     {
         // After creating the order
-        $order->customer->notify(new OrderCreatedNotification($order));
+        $order->customer->notify(new OrderCreatedNotification($order, $order instanceof ProductOrder ? 'product' : 'service'));
         try {
             app(\App\Services\NotificationService::class)->notifyAdmin(new \App\Notifications\OrderCreatedNotification($order, true));
         } catch (\Exception $e) {

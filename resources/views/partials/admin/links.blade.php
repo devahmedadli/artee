@@ -11,10 +11,25 @@
     </a>
 </li>
 <li class="nav-item">
-    <a class="nav-link {{ request()->routeIs('orders.*') ? 'active' : '' }} " href="{{ route('orders.index') }}">
-        <i class="bi bi-box-seam"></i>
-        <span>{{ __('Orders') }}</span>
+    <a class="nav-link  {{ request()->routeIs('orders.*') ? 'active' : '' }}  collapsed" data-bs-target="#orders-nav"
+        data-bs-toggle="collapse" href="#">
+        <i class="bi bi-box-seam"></i><span>{{ __('Orders') }}</span><i class="bi bi-chevron-down ms-auto"></i>
     </a>
+    <ul id="orders-nav" class="nav-content {{ request()->routeIs('orders.*') || request()->routeIs('product-orders.*') ? 'collapsed' : 'collapse' }}"
+        data-bs-parent="#sidebar-nav">
+        <li>
+            <a href="{{ route('orders.index') }}">
+                <i class="bi bi-box-seam"></i>
+                <span>{{ __('Service Orders') }}</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('product-orders.index') }}">
+                <i class="bi bi-box-seam"></i>
+                <span>{{ __('Product Orders') }}</span>
+            </a>
+        </li>
+    </ul>
 </li>
 <li class="nav-item">
     <a class="nav-link {{ request()->routeIs('services.*') ? 'active' : '' }} " href="{{ route('services.index') }}">
@@ -116,12 +131,12 @@
     </a>
     <ul id="archives-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
 
-        <li>
+        {{-- <li>
             <a href="{{ route('admin.chats.archived') }}">
                 <i class="bi bi-circle"></i>
                 <span>{{ __('Chats') }}</span>
             </a>
-        </li>
+        </li> --}}
         <li>
             <a href="{{ route('admin.archived-orders') }}">
                 <i class="bi bi-circle"></i>

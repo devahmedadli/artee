@@ -22,11 +22,7 @@ class OrderController extends Controller
         return view('admin.orders.index', compact('orders', 'freelancers'));
     }
 
-    public function customerIndex()
-    {
-        $orders = Order::with('customer')->where('customer_id', Auth::user()->id)->get();
-        return view('customer.orders.index', compact('orders'));
-    }
+
 
     public function freelancerIndex()
     {
@@ -45,37 +41,7 @@ class OrderController extends Controller
         return view('admin.orders.create', compact('customers'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     * 
-     * @param \App\Http\Requests\StoreOrderRequest $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function store(StoreOrderRequest $request)
-    {
-        $data               = $request->validated();
-        $data['customer_id'] = Auth::user()->id;
-        $order = Order::create($data);
-        // storing attachments and adding to order attachments table
-        foreach ($request->attachments as $attachment) {
-            // 
-            $path = $attachment->store('attachments/' . $order->id, 'public');
-            $order->attachments()->create([
-                'path' => $path,
-                'name' => $attachment->getClientOriginalName(),
-            ]);
-        }
-        // send email to customer
-        // $order->customer->notify(new OrderCreatedNotification($order));
-        // try {
-        //     app(\App\Services\NotificationService::class)->notifyAdmin(new \App\Notifications\OrderCreatedNotification($order, true));
-        // } catch (\Exception $e) {
-        //     \Log::error('Error notifying admin: ' . $e->getMessage());
-        // }
-
-        flash()->success(__('Order created successfully.'));
-        return to_route('customer.orders.index');
-    }
+    
 
     /**
      * Display the specified resource.
@@ -93,12 +59,6 @@ class OrderController extends Controller
     public function freelancerShow(Order $order)
     {
         return view('freelancer.orders.show', compact('order'));
-    }
-
-    public function customerShow(Order $order)
-    {
-        $services = Service::all();
-        return view('customer.orders.show', compact('order', 'services'));
     }
 
     public function edit(Order $order)

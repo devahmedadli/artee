@@ -30,7 +30,19 @@ use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\FileDownloaderController;
 use App\Http\Controllers\FreelancerPaymentController;
 use App\Http\Controllers\Customer\CustomerRegisterController;
+use App\Http\Controllers\ProductOrderController;
 
+
+Route::get('/business-card', function () {
+    $name = 'John Doe';
+    $imageUrl = asset('assets/imgs/avatar.png');
+    $socialLinks = [
+        'https://www.facebook.com',
+        'https://www.twitter.com',
+        'https://www.instagram.com',
+    ];
+    return view('components.business-card', compact('name', 'imageUrl', 'socialLinks'));
+});
 
 Route::get('/generate-pdf', [PDFController::class, 'generatePDF']);
 Route::get('lang-swape/{locale}', [LanguageController::class, 'langSwape'])->name('langSwape');
@@ -79,12 +91,12 @@ Route::middleware('auth')->group(function () {
             Route::put('/account/update-info', 'updateInfo')->name('customer.account.update-info');
         });
         Route::get('/chats', [ChatController::class, 'index'])->name('customer.chats');
-        Route::controller(OrderController::class)->group(function () {
-            Route::get('/orders', 'customerIndex')->name('customer.orders.index');
+        Route::controller(\App\Http\Controllers\Customer\OrderController::class)->group(function () {
+            Route::get('/orders', 'index')->name('customer.orders.index');
             Route::post('/orders', 'store')->name('customer.orders.store');
             Route::put('/orders/{order}', 'update')->name('orders.update');
             Route::put('/orders/{order}/cancel', 'cancel')->name('orders.cancel');
-            Route::get('/orders/{order}', 'customerShow')->name('customer.orders.show');
+            Route::get('/orders/{order}/{type}', 'show')->name('customer.orders.show');
             // Route::get('/orders/{order}/checkout', 'checkout')->name('customer.orders.checkout');
             Route::post('/orders/{order}/accept-offer', 'customerAcceptOffer')->name('customer.orders.accept-offer');
         });
@@ -141,7 +153,9 @@ Route::middleware('auth')->group(function () {
         Route::put('/offers/{offer}/cancel', [OfferController::class, 'cancel'])->name('offers.cancel');
         Route::resource('orders', OrderController::class)->except(['store', 'update']);
         Route::put('/orders/{order}/set-price', [OrderController::class, 'setPrice'])->name('orders.set-price');
-
+        Route::resource('product-orders', ProductOrderController::class)->except(['store', 'update']);
+        Route::get('/product-orders/{productOrder}', [ProductOrderController::class, 'show'])->name('product-orders.show');
+        Route::put('/product-orders/{productOrder}/update-status', [ProductOrderController::class, 'updateStatus'])->name('product-orders.update-status');
         Route::controller(OrderProgressController::class)->group(function () {
             Route::post('/orders/{order}/progress', 'store')->name('admin.orders.progress.store');
             Route::put('/orders/progress/{orderProgress}/accept', 'accept')->name('admin.orders.progress.accept');
@@ -193,5 +207,14 @@ Route::controller(PasswordResetController::class)->group(function () {
 });
 
 Route::post('/apple-pay/validate', [ApplePayController::class, 'validate'])->name('apple-pay.validate');
+
+// Product order routes
+Route::post('/product/order', [ProductOrderController::class, 'store'])->name('product.order.store');
+Route::get('/product/order/{order}/success', [ProductOrderController::class, 'success'])->name('product.order.success');
+Route::get('/product/order/{order}/payment', [ProductOrderController::class, 'payment'])->name('product.order.payment');
+Route::get('/product/order/payment/callback', [ProductOrderController::class, 'paymentCallback'])->name('product.order.payment.callback');
+
+// API route for requirements
+Route::get('/api/product-options/requirements', [ProductOrderController::class, 'getRequirements']);
 
 Broadcast::routes();

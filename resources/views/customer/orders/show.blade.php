@@ -57,17 +57,8 @@
                                 <strong>
                                     {{ __('Total') }}:
                                 </strong>
-                                @if ($order->customer_accepted)
-                                    {{ $order->total }} $
-                                    @if (!$order->is_paid)
-                                        <a href="{{ route('checkout', $order->id) }}" class="btn btn-primary">
-                                            {{ __('Pay Now') }}
-                                        </a>
-                                    @else
-                                        <span class="badge bg-success">{{ __('Paid') }}</span>
-                                    @endif
-                                @else
-                                    {{-- accept the offer --}}
+                                @if ($order instanceof \App\Models\Order && !$order->customer_accepted)
+                                    {{-- accept the offer for service orders --}}
                                     {{ $order->total }} $
                                     <form action="{{ route('customer.orders.accept-offer', $order->id) }}" method="post"
                                         onsubmit="return confirm('{{ __('Are you sure you want to accept this offer?') }}')">
@@ -76,6 +67,22 @@
                                             {{ __('Accept Offer') }}
                                         </button>
                                     </form>
+                                @else
+                                    {{ $order->total }} $
+                                    @if (!$order->is_paid)
+                                        @if ($order instanceof \App\Models\Order)
+                                            <a href="{{ route('checkout', $order->id) }}" class="btn btn-primary">
+                                                {{ __('Pay Now') }}
+                                            </a>
+                                        @else
+                                            <a href="{{ route('product.order.payment', $order->id) }}"
+                                                class="btn btn-primary">
+                                                {{ __('Pay Now') }}
+                                            </a>
+                                        @endif
+                                    @else
+                                        <span class="badge bg-success">{{ __('Paid') }}</span>
+                                    @endif
                                 @endif
                             </p>
                         @else
@@ -97,18 +104,21 @@
                         <p><strong>
                                 {{ __('Customer Email') }}:
                             </strong> {{ $order->customer?->email }}</p> --}}
-                        @if ($order->freelancer)
-                            <p><strong>
-                                    {{ __('Employee') }}:
-                                </strong> {{ $order->freelancer?->name }}</p>
-                        @else
-                            <p><strong>{{ __('Employee') }}:</strong> {{ __('Not assigned yet') }}</p>
+                        @if ($order instanceof \App\Models\Order)
+                            @if ($order->freelancer)
+                                <p><strong>
+                                        {{ __('Employee') }}:
+                                    </strong> {{ $order->freelancer?->name }}</p>
+                            @else
+                                <p><strong>{{ __('Employee') }}:</strong> {{ __('Not assigned yet') }}</p>
+                            @endif
                         @endif
                     </div>
                 </div>
             </div>
         </div>
-        @if ($order->status == 'completed')
+
+        @if ($order instanceof \App\Models\Order && $order->status == 'completed')
             {{-- Files --}}
             <div class="card mb-4">
                 <div class="card-header">
@@ -140,6 +150,7 @@
                 </div>
             </div>
         @endif
+
         {{-- order details --}}
         <div class="card mb-4">
             <div class="card-header">
@@ -148,87 +159,171 @@
                 </h5>
             </div>
             <div class="card-body">
-
-                <div class="mb-3">
-                    <h6>
-                        <strong>
-                            {{ __('Service') }}:
-                        </strong>
-                        {{ $order->service?->name }}
-                    </h6>
-                    <p>
-                        <strong>
-                            {{ __('Description') }}:
-                        </strong>
-                        <br>
-                        {!! nl2br(e($order->description)) !!}
-                    </p>
-                </div>
-
-            </div>
-        </div>
-        {{-- attachments --}}
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="card-title">
-                    {{ __('Attached Files') }}
-                </h5>
-            </div>
-            <div class="card-body">
-                @if ($order->attachments->count() > 0)
-                    <ol>
-                        @foreach ($order->attachments as $file)
-                            <li>
-                                <form action="{{ route('file.download') }}" method="GET">
-                                    @csrf
-                                    <input type="hidden" name="file_path" value="{{ urlencode($file->path) }}">
-                                    <button type="submit" class="btn btn-link">
-                                        {{ basename($file->name) }}
-                                        <i class="bi bi-download mx-2 text-success"></i>
-                                    </button>
-                                </form>
-                            </li>
-                        @endforeach
-                    </ol>
+                @if ($order instanceof \App\Models\Order)
+                    {{-- Service Order Details --}}
+                    <div class="mb-3">
+                        <h6>
+                            <strong>
+                                {{ __('Service') }}:
+                            </strong>
+                            {{ $order->service?->{app()->getLocale() . '_name'} }}
+                        </h6>
+                        <p>
+                            <strong>
+                                {{ __('Description') }}:
+                            </strong>
+                            <br>
+                            {!! nl2br(e($order->service?->{app()->getLocale() . '_description'})) !!}
+                        </p>
+                    </div>
                 @else
-                    <p>
-                        {{ __('No files attached') }}
-                    </p>
-                @endif
-            </div>
-        </div>
+                    {{-- Product Order Details --}}
+                    <div class="mb-3">
+                        <h6>
+                            <strong>
+                                {{ __('Product') }}:
+                            </strong>
+                            {{ $order->product?->{app()->getLocale() . '_name'} }}
+                        </h6>
 
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="card-title">
-                    {{ __('Order Progress') }}
-                </h5>
-            </div>
-            <div class="card-body">
-                @if ($order->progress->where('admin_accepted', true)->count() > 0)
-                    <ul class="timeline">
-                        @foreach ($order->progress->where('admin_accepted', true) as $progress)
-                            <li class="timeline-item">
-                                <div class="timeline-marker"></div>
-                                <div class="timeline-content">
-                                    <h5 class="timeline-title">{{ __($progress->status) }}</h5>
-                                    <p class="timeline-date">{{ $progress->created_at->format('Y-m-d H:i') }}</p>
-                                    <p>{{ $progress->note }}</p>
+                        @if (isset($order->data['product']['description']))
+                            <p>
+                                <strong>
+                                    {{ __('Description') }}:
+                                </strong>
+                                <br>
+                                {!! nl2br(e($order->data['product']['description'])) !!}
+                            </p>
+                        @endif
+
+                        @if (isset($order->data['selected_options']) && count($order->data['selected_options']) > 0)
+                            <div class="mt-4">
+                                <h6>{{ __('Selected Options') }}:</h6>
+                                <ul class="list-group list-group-flush">
+                                    @foreach ($order->data['selected_options'] as $option)
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>{{ __($option['option_name']) }}:
+                                                <strong>{{ __($option['value_name']) }}</strong></span>
+                                            @if ($option['price'] > 0)
+                                                <span class="badge bg-success rounded-pill">+{{ $option['price'] }}</span>
+                                            @endif
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
+                        @if (isset($order->data['notes']) && !empty($order->data['notes']))
+                            <div class="mt-4">
+                                <h6>{{ __('Additional Notes') }}:</h6>
+                                <p>{!! nl2br(e($order->data['notes'])) !!}</p>
+                            </div>
+                        @endif
+
+                        @if (isset($order->data['requirements']) && count($order->data['requirements']) > 0)
+                            <div class="mt-4">
+                                <h6>{{ __('Requirements') }}:</h6>
+                                <div class="row">
+                                    @foreach ($order->data['requirements'] as $reqId => $requirement)
+                                        <div class="col-md-6 mb-3">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <h6 class="card-subtitle mb-2 text-muted">{{ __('Requirement') }}
+                                                        #{{ $reqId }}</h6>
+                                                    @if (is_string($requirement) && Str::startsWith($requirement, 'data:image'))
+                                                        <img src="{{ $requirement }}" alt="Requirement Image"
+                                                            class="img-fluid mb-2">
+                                                    @elseif (is_string($requirement))
+                                                        <p>{{ __($requirement) }}</p>
+                                                    @elseif ($requirement['type'] == 'text' && Str::startsWith($requirement['value'], 'http'))
+                                                        <p> <a href="{{ $requirement['value'] }}" target="_blank"
+                                                                class="text-decoration-none text-primary">{{ __($requirement['value']) }}</a>
+                                                        </p>
+                                                    @elseif ($requirement['type'] == 'number')
+                                                        <p>{{ __($requirement['value']) }}</p>
+                                                    @elseif ($requirement['type'] == 'file')
+                                                        <a href="{{ $requirement['value'] }}" target="_blank" download
+                                                            class="btn btn-primary">{{ __('Download File') }}</a>
+                                                    @elseif ($requirement['type'] == 'boolean')
+                                                        <p>{{ __($requirement['value'] ? __('Yes') : __('No')) }}</p>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
                                 </div>
-                            </li>
-                        @endforeach
-                    </ul>
-                @else
-                    <p>{{ __('No progress recorded yet.') }}</p>
+                            </div>
+                        @endif
+                    </div>
                 @endif
             </div>
         </div>
+
+        @if ($order instanceof \App\Models\Order)
+            {{-- attachments for service orders --}}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title">
+                        {{ __('Attached Files') }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if ($order->attachments->count() > 0)
+                        <ol>
+                            @foreach ($order->attachments as $file)
+                                <li>
+                                    <form action="{{ route('file.download') }}" method="GET">
+                                        @csrf
+                                        <input type="hidden" name="file_path" value="{{ urlencode($file->path) }}">
+                                        <button type="submit" class="btn btn-link">
+                                            {{ basename($file->name) }}
+                                            <i class="bi bi-download mx-2 text-success"></i>
+                                        </button>
+                                    </form>
+                                </li>
+                            @endforeach
+                        </ol>
+                    @else
+                        <p>
+                            {{ __('No files attached') }}
+                        </p>
+                    @endif
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title">
+                        {{ __('Order Progress') }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if ($order->progress->where('admin_accepted', true)->count() > 0)
+                        <ul class="timeline">
+                            @foreach ($order->progress->where('admin_accepted', true) as $progress)
+                                <li class="timeline-item">
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <h5 class="timeline-title">{{ __($progress->status) }}</h5>
+                                        <p class="timeline-date">{{ $progress->created_at->format('Y-m-d H:i') }}</p>
+                                        <p>{{ $progress->note }}</p>
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <p>{{ __('No progress recorded yet.') }}</p>
+                    @endif
+                </div>
+            </div>
+        @endif
+
         <div class="text-center mt-4">
             <a href="{{ route('customer.orders.index') }}" class="btn btn-main">
                 {{ __('Back to Orders') }}
                 <i class="bi bi-arrow-{{ app()->getLocale() == 'ar' ? 'left' : 'right' }}"></i>
             </a>
-            @if ($order->status == 'pending')
+            @if ($order instanceof \App\Models\Order && $order->status == 'pending')
                 <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editOrderModal">
                     {{ __('Edit Order') }}
                 </button>
@@ -242,7 +337,7 @@
             @endif
         </div>
     </div>
-    @if ($order->status == 'pending')
+    @if ($order instanceof \App\Models\Order && $order->status == 'pending')
         <!-- Edit Order Modal -->
         <div class="modal fade" id="editOrderModal" tabindex="-1" aria-labelledby="editOrderModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">

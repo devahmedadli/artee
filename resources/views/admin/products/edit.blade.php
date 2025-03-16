@@ -1,54 +1,304 @@
 @extends('layouts.admin')
-
+@section('title', __('Edit Product'))
 @section('content')
-    <form action="{{ route('products.update', $product->id) }}" method="post" class="row bg-white border p-3"
-        enctype="multipart/form-data">
-        @csrf
-        @method('PUT')
-        <h2 class="mb-5 fw-bold text-muted">تعديل بيانات المنتج</h2>
-        @include('partials.errors')
+    <div class="container-fluid">
+        <form action="{{ route('products.update', $product->id) }}" method="post" class="row g-4"
+            enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
+            @include('partials.errors')
 
-        <div class="col-md-6 mb-3">
-            <label for="name" class="form-label">اسم المنتج</label>
-            <input type="text" id="name" name="name" class="form-control" value="{{ old('name', $product->name) }}"
-                required>
+            <!-- Basic Product Information -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-light py-3 mb-4">
+                    <h5 class="mb-0"> {{ __('Basic Information') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-8 row">
+                            <div class="col-md-6 form-group mb-3">
+                                <label for="ar_name" class="form-label fw-bold">
+                                    {{ __('Product Name (Arabic)') }}</label>
+                                <input type="text" class="form-control" id="ar_name" name="ar_name"
+                                    value="{{ old('ar_name', $product->ar_name) }}" required>
+                            </div>
+                            <div class="col-md-6 form-group mb-3">
+                                <label for="en_name" class="form-label fw-bold">
+                                    {{ __('Product Name (English)') }}</label>
+                                <input type="text" class="form-control" id="en_name" name="en_name"
+                                    value="{{ old('en_name', $product->en_name) }}" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="base_price" class="form-label fw-bold"> {{ __('Base Price') }}</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" id="base_price" name="base_price"
+                                        step="0.01" value="{{ old('base_price', $product->base_price) }}" required>
+                                </div>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="ar_description" class="form-label fw-bold">
+                                    {{ __('Product Description (Arabic)') }}</label>
+                                <textarea class="form-control" id="ar_description" name="ar_description" rows="4">{{ old('ar_description', $product->ar_description) }}</textarea>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="en_description" class="form-label fw-bold">
+                                    {{ __('Product Description (English)') }}</label>
+                                <textarea class="form-control" id="en_description" name="en_description" rows="4">{{ old('en_description', $product->en_description) }}</textarea>
+                            </div>
+                            <div class="form-group mb-3">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input" id="active" name="active"
+                                        {{ old('active', $product->active) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="active"> {{ __('Active Product') }}</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-flex flex-column justify-content-center align-items-center">
+                            <div id="imagePlaceholder" class="mb-2"
+                                style="cursor: pointer; background-color: #f0f0f0; width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; background-size: cover; background-position: center; background-image: url('{{ $product->image_url }}');">
+                                @if (!$product->image_url)
+                                    <i class="bi bi-image" style="font-size: 50px;"></i>
+                                @endif
+                            </div>
+                            <input type="file" class="form-control d-none" id="image" name="image"
+                                accept="image/*" onchange="previewImage(this)">
+                            <label for="image" class="form-label fw-bold text-muted">
+                                {{ __('Product Image') }}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Options -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-light py-3 d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0"> {{ __('Product Options') }}</h5>
+                    <button type="button" class="btn btn-primary btn-sm" id="addOption">
+                        <i class="bi bi-plus"></i> {{ __('Add Option') }}
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div id="optionsContainer">
+                        @foreach ($product->options as $index => $option)
+                            <div class="option-group border rounded p-3 mb-3 bg-light">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="mb-0"> {{ __('Option') }} {{ $index + 1 }}</h6>
+                                    <button type="button" class="btn btn-danger btn-sm remove-option">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                                <div class="mb-3 row">
+                                    <div class="col-md-6 form-group mb-3">
+                                        <label class="form-label fw-bold"> {{ __('Option Name (Arabic)') }}</label>
+                                        <input type="text" class="form-control"
+                                            name="options[{{ $index }}][ar_name]" value="{{ $option->ar_name }}"
+                                            required>
+                                    </div>
+                                    <div class="col-md-6 form-group mb-3">
+                                        <label class="form-label fw-bold"> {{ __('Option Name (English)') }}</label>
+                                        <input type="text" class="form-control"
+                                            name="options[{{ $index }}][en_name]" value="{{ $option->en_name }}"
+                                            required>
+                                    </div>
+                                </div>
+                                <div class="values-container">
+                                    @foreach ($option->values as $valueIndex => $value)
+                                        <div class="input-group mb-2">
+                                            <input type="text" class="form-control"
+                                                name="options[{{ $index }}][values][{{ $valueIndex }}][ar_value]"
+                                                value="{{ $value->ar_value }}"
+                                                placeholder=" {{ __('Value Name (Arabic)') }}" required>
+                                            <input type="text" class="form-control"
+                                                name="options[{{ $index }}][values][{{ $valueIndex }}][en_value]"
+                                                value="{{ $value->en_value }}"
+                                                placeholder=" {{ __('Value Name (English)') }}" required>
+                                            <input type="number" class="form-control"
+                                                name="options[{{ $index }}][values][{{ $valueIndex }}][price]"
+                                                value="{{ $value->price }}"
+                                                placeholder=" {{ __('Additional Price') }}" step="0.01" required>
+                                            @if ($loop->first)
+                                                <button type="button" class="btn btn-success add-value">
+                                                    <i class="bi bi-plus"></i>
+                                                </button>
+                                            @else
+                                                <button type="button" class="btn btn-danger remove-value">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            @endif
+                                            <button type="button" class="btn btn-info add-requirement" title="{{ __('Add Requirements') }}">
+                                                <i class="bi bi-list-check"></i>
+                                            </button>
+                                        </div>
+                                        <div class="requirements-container {{ !isset($value->requirements) || count($value->requirements) === 0 ? 'd-none' : '' }} mb-3">
+                                            <div class="requirements-list p-2 border-start border-end border-bottom rounded-bottom">
+                                                @if(isset($value->requirements))
+                                                    @foreach($value->requirements as $reqIndex => $requirement)
+                                                        <div class="requirement-item border-bottom pb-2 mb-2">
+                                                            <div class="row g-2">
+                                                                <div class="col-md-3">
+                                                                    <input type="text" class="form-control form-control-sm" 
+                                                                        name="options[{{ $index }}][values][{{ $valueIndex }}][requirements][{{ $reqIndex }}][ar_name]"
+                                                                        value="{{ $requirement->ar_name }}"
+                                                                        placeholder="{{ __('Name (Arabic)') }}" required>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <input type="text" class="form-control form-control-sm" 
+                                                                        name="options[{{ $index }}][values][{{ $valueIndex }}][requirements][{{ $reqIndex }}][en_name]"
+                                                                        value="{{ $requirement->en_name }}"
+                                                                        placeholder="{{ __('Name (English)') }}" required>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <select class="form-select form-select-sm" 
+                                                                        name="options[{{ $index }}][values][{{ $valueIndex }}][requirements][{{ $reqIndex }}][type]" required>
+                                                                        <option value="text" {{ $requirement->type === 'text' ? 'selected' : '' }}>{{ __('Text') }}</option>
+                                                                        <option value="number" {{ $requirement->type === 'number' ? 'selected' : '' }}>{{ __('Number') }}</option>
+                                                                        <option value="boolean" {{ $requirement->type === 'boolean' ? 'selected' : '' }}>{{ __('Yes/No') }}</option>
+                                                                        <option value="file" {{ $requirement->type === 'file' ? 'selected' : '' }}>{{ __('File') }}</option>
+                                                                        <option value="image" {{ $requirement->type === 'image' ? 'selected' : '' }}>{{ __('Image') }}</option>
+                                                                        <option value="custom_design" {{ $requirement->type === 'custom_design' ? 'selected' : '' }}>{{ __('Custom Design') }}</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <div class="form-check mt-1">
+                                                                        <input class="form-check-input" type="checkbox" 
+                                                                            name="options[{{ $index }}][values][{{ $valueIndex }}][requirements][{{ $reqIndex }}][required]" 
+                                                                            id="req_required_{{ $index }}_{{ $valueIndex }}_{{ $reqIndex }}"
+                                                                            {{ $requirement->required ? 'checked' : '' }}>
+                                                                        <label class="form-check-label small" for="req_required_{{ $index }}_{{ $valueIndex }}_{{ $reqIndex }}">
+                                                                            {{ __('Required') }}
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-1">
+                                                                    <button type="button" class="btn btn-sm btn-danger remove-requirement">
+                                                                        <i class="bi bi-trash"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                @endif
+                                            </div>
+                                            <div class="d-flex justify-content-end mt-2">
+                                                <button type="button" class="btn btn-sm btn-primary add-new-requirement">
+                                                    <i class="bi bi-plus-circle me-1"></i> {{ __('Add Requirement') }}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-success px-5">
+                    <i class="bi bi-save me-2"></i> {{ __('Save Changes') }}
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Option Template -->
+    <template id="optionTemplate">
+        <div class="option-group border rounded p-3 mb-3 bg-light">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="mb-0"> {{ __('New Option') }}</h6>
+                <button type="button" class="btn btn-danger btn-sm remove-option">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+            <div class="mb-3 row">
+                <div class="col-md-6 form-group mb-3">
+                    <label for="ar_option_name" class="form-label fw-bold"> {{ __('Option Name (Arabic)') }}</label>
+                    <input type="text" class="form-control" name="options[__INDEX__][ar_name]"
+                        placeholder=" {{ __('Option Name (Example: Size, Color)') }}" required>
+                </div>
+                <div class="col-md-6 form-group mb-3">
+                    <label for="en_option_name" class="form-label fw-bold"> {{ __('Option Name (English)') }}</label>
+                    <input type="text" class="form-control" name="options[__INDEX__][en_name]"
+                        placeholder=" {{ __('Option Name (Example: Size, Color)') }}" required>
+                </div>
+            </div>
+            <div class="values-container">
+                <div class="input-group mb-2">
+                    <input type="text" class="form-control" name="options[__INDEX__][values][0][ar_value]"
+                        placeholder=" {{ __('Value Name (Arabic)') }}" required>
+                    <input type="text" class="form-control" name="options[__INDEX__][values][0][en_value]"
+                        placeholder=" {{ __('Value Name (English)') }}" required>
+                    <input type="number" class="form-control" name="options[__INDEX__][values][0][price]"
+                        placeholder=" {{ __('Additional Price') }}" step="0.01" required>
+                    <button type="button" class="btn btn-success add-value">
+                        <i class="bi bi-plus"></i>
+                    </button>
+                    <button type="button" class="btn btn-info add-requirement" title="{{ __('Add Requirements') }}">
+                        <i class="bi bi-list-check"></i>
+                    </button>
+                </div>
+                <div class="requirements-container d-none mb-3">
+                    <div class="requirements-list p-2 border-start border-end border-bottom rounded-bottom">
+                        <!-- Requirements will be added here -->
+                    </div>
+                    <div class="d-flex justify-content-end mt-2">
+                        <button type="button" class="btn btn-sm btn-primary add-new-requirement">
+                            <i class="bi bi-plus-circle me-1"></i> {{ __('Add Requirement') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-md-6 mb-3">
-            <label for="price" class="form-label">السعر</label>
-            <input type="number" id="price" name="price" class="form-control" step="0.01"
-                value="{{ old('price', $product->price) }}" required>
+    </template>
+
+    <!-- Requirement Template -->
+    <template id="requirementTemplate">
+        <div class="requirement-item border-bottom pb-2 mb-2">
+            <div class="row g-2">
+                <div class="col-md-3">
+                    <input type="text" class="form-control form-control-sm" 
+                        name="options[__OPTION_INDEX__][values][__VALUE_INDEX__][requirements][__REQ_INDEX__][ar_name]"
+                        placeholder="{{ __('Name (Arabic)') }}" required>
+                </div>
+                <div class="col-md-3">
+                    <input type="text" class="form-control form-control-sm" 
+                        name="options[__OPTION_INDEX__][values][__VALUE_INDEX__][requirements][__REQ_INDEX__][en_name]"
+                        placeholder="{{ __('Name (English)') }}" required>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select form-select-sm" 
+                        name="options[__OPTION_INDEX__][values][__VALUE_INDEX__][requirements][__REQ_INDEX__][type]" required>
+                        <option value="text">{{ __('Text') }}</option>
+                        <option value="number">{{ __('Number') }}</option>
+                        <option value="boolean">{{ __('Yes/No') }}</option>
+                        <option value="file">{{ __('File') }}</option>
+                        <option value="image">{{ __('Image') }}</option>
+                        <option value="custom_design">{{ __('Custom Design') }}</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-check mt-1">
+                        <input class="form-check-input" type="checkbox" 
+                            name="options[__OPTION_INDEX__][values][__VALUE_INDEX__][requirements][__REQ_INDEX__][required]" 
+                            id="req_required___OPTION_INDEX_____VALUE_INDEX_____REQ_INDEX__" checked>
+                        <label class="form-check-label small" for="req_required___OPTION_INDEX_____VALUE_INDEX_____REQ_INDEX__">
+                            {{ __('Required') }}
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-sm btn-danger remove-requirement">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </div>
         </div>
-        <div class="col-md-12 mb-3">
-            <label for="description" class="form-label">الوصف</label>
-            <textarea id="description" name="description" class="form-control" rows="10">{{ old('description', $product->description) }}</textarea>
-        </div>
-        <div class="col-md-6 mb-3">
-            <label for="service" class="form-label">الخدمة</label>
-            <select id="service" name="service_id" class="form-select" required>
-                @foreach ($services as $service)
-                    <option value="{{ $service->id }}" {{ $product->service_id == $service->id ? 'selected' : '' }}>
-                        {{ $service->name }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-        {{-- <div class="col-md-6 mb-3">
-            <label for="status" class="form-label">الحالة</label>
-            <select id="status" name="status" class="form-select" required>
-                <option value="active" {{ $product->status == 'active' ? 'selected' : '' }}>نشط</option>
-                <option value="inactive" {{ $product->status == 'inactive' ? 'selected' : '' }}>غير نشط</option>
-            </select>
-        </div> --}}
-        <div class="col-md-6 mb-3">
-            <label for="image" class="form-label">صورة المنتج</label>
-            <input type="file" id="image" name="image" class="form-control">
-            @if ($product->image)
-                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="mt-2"
-                    style="max-width: 200px;">
-            @endif
-        </div>
-        <div class="text-center mt-3">
-            <input type="submit" value="حفظ" class="btn btn-success px-5">
-        </div>
-    </form>
+    </template>
+
+    <canvas id="canvas" style="display: none;"></canvas>
+@endsection
+
+@section('page-scripts')
+    @vite('resources/js/pages/products/product-form.js')
 @endsection

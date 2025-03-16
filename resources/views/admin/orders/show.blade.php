@@ -22,7 +22,7 @@
                             {{-- admin can approve order --}}
                             <form action="{{ route('admin.orders.approve', $order->id) }}" method="POST"
                                 style="display:inline;"
-                                onsubmit="return confirm('هل أنت متأكد أنك تريد التاكيد بأن هذا الطلب مكتمل؟');">
+                                onsubmit="return confirm('{{ __('Are you sure you want to approve this order?') }}');">
                                 @csrf
                                 @method('PUT')
                                 <button type="submit" class="btn btn-sm btn-primary">{{ __('Approve') }}</button>
@@ -77,7 +77,7 @@
                                     </span>
                                     {{-- cancel offer --}}
                                     <form action="{{ route('offers.cancel', $offer->id) }}" method="POST" class="d-inline"
-                                        onsubmit="return confirm('هل أنت متأكد أنك تريد إلغاء هذا العرض؟');">
+                                        onsubmit="return confirm('{{ __('Are you sure you want to cancel this offer?') }}');">
                                         @csrf
                                         @method('PUT')
                                         <button type="submit" class="btn btn-danger btn-sm">
@@ -165,7 +165,7 @@
                                         </a>
                                         <form action="{{ route('admin.orders.files.destroy', $file->id) }}" method="POST"
                                             style="display:inline;"
-                                            onsubmit="return confirm('هل أنت متأكد أنك تريد حذف هذا الملف؟');">
+                                            onsubmit="return confirm('{{ __('Are you sure you want to delete this file?') }}');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm">
@@ -177,7 +177,7 @@
                                         @if (!$file->admin_accepted)
                                             <form action="{{ route('admin.orders.files.accept', $file->id) }}"
                                                 method="POST" style="display:inline;"
-                                                onsubmit="return confirm('هل أنت متأكد أنك تريد قبول هذا الملف؟');">
+                                                onsubmit="return confirm('{{ __('Are you sure you want to accept this file?') }}');">
                                                 @csrf
                                                 @method('PUT')
                                                 <button type="submit" class="btn btn-success btn-sm">
@@ -256,7 +256,7 @@
                                     @if (!$progress->admin_accepted)
                                         <form action="{{ route('admin.orders.progress.accept', $progress->id) }}"
                                             method="POST" style="display:inline;"
-                                            onsubmit="return confirm('هل أنت متأكد أنك تريد قبول هذا التقدم؟');">
+                                            onsubmit="return confirm('{{ __('Are you sure you want to accept this progress?') }}');">
                                             @csrf
                                             @method('PUT')
                                             <button type="submit" class="btn btn-success btn-sm">
@@ -267,7 +267,7 @@
                                     {{-- delete order progress --}}
                                     <form action="{{ route('admin.orders.progress.destroy', $progress->id) }}"
                                         method="POST" style="display:inline;"
-                                        onsubmit="return confirm('هل أنت متأكد أنك تريد حذف هذا التقدم؟');">
+                                        onsubmit="return confirm('{{ __('Are you sure you want to delete this progress?') }}');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm">

@@ -21,9 +21,10 @@ class LanguageController extends Controller
             $user->lang = $locale;
             $user->save();
         }
+            // dd(Session::get('locale'));
 
         // Cache::forget('page_content_home_ar');
         // Cache::forget('page_content_home_en');
-        return back();
+        return to_route('login');
     }
 }

@@ -13,8 +13,8 @@
                     <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
                         <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top img-fluid" alt="Offer Image">
                         <div class="card-body">
-                            <h5 class="card-title text-dark fw-bold">{{ $product->name }}</h5>
-                            <p class="card-text text-muted">{{ $product->description }}</p>
+                            <h5 class="card-title text-dark fw-bold">{{ $product->{app()->getLocale(). '_name'} }}</h5>
+                            <p class="card-text text-muted">{{ $product->{app()->getLocale(). '_description'} }}</p>
                             <a href="{{ route('products.product-details', ['product' => $product->id]) }}" class="btn btn-warning fw-semibold w-100">
                                 {{ __('View Details') }}
                                 <i class="fa-solid fa-arrow-{{app()->getLocale() === 'ar' ? 'left' : 'right'}}-long ms-2"></i>

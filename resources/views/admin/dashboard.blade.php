@@ -105,6 +105,127 @@
             </div>
             <!-- End orders Card -->
         </div>
+        
+        <!-- Detailed Orders Row -->
+        <div class="row mt-4">
+            <!-- Service Orders Count Card -->
+            <div class="col-xxl-3 col-md-6">
+                <div class="card info-card service-orders-card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ __('Service Orders') }} <span>| {{ __('This Month') }}</span></h5>
+                        <div class="d-flex align-items-center">
+                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                <i class="bi bi-briefcase"></i>
+                            </div>
+                            <div class="ps-3">
+                                <h6>{{ $serviceOrdersCount }}</h6>
+                                <span
+                                    class="text-{{ $serviceOrdersPercentage > 0 ? 'success' : 'danger' }} small pt-1 fw-bold">{{ round($serviceOrdersPercentage, 2) }}%</span>
+                                @if ($serviceOrdersPercentage > 0)
+                                    <span class="text-muted small pt-2 ps-1">
+                                        {{ __('Increase') }}
+                                    </span>
+                                @else
+                                    <span class="text-muted small pt-2 ps-1">
+                                        {{ __('Decrease') }}
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Service Orders Count Card -->
+            
+            <!-- Service Orders Value Card -->
+            <div class="col-xxl-3 col-md-6">
+                <div class="card info-card service-orders-value-card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ __('Service Orders Value') }} <span>| {{ __('This Month') }}</span></h5>
+                        <div class="d-flex align-items-center">
+                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                <i class="bi bi-currency-dollar"></i>
+                            </div>
+                            <div class="ps-3">
+                                <h6>${{ $serviceOrdersTotalValue }}</h6>
+                                <span
+                                    class="text-{{ $serviceOrdersValuePercentage > 0 ? 'success' : 'danger' }} small pt-1 fw-bold">{{ round($serviceOrdersValuePercentage, 2) }}%</span>
+                                @if ($serviceOrdersValuePercentage > 0)
+                                    <span class="text-muted small pt-2 ps-1">
+                                        {{ __('Increase') }}
+                                    </span>
+                                @else
+                                    <span class="text-muted small pt-2 ps-1">
+                                        {{ __('Decrease') }}
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Service Orders Value Card -->
+            
+            <!-- Product Orders Count Card -->
+            <div class="col-xxl-3 col-md-6">
+                <div class="card info-card product-orders-card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ __('Product Orders') }} <span>| {{ __('This Month') }}</span></h5>
+                        <div class="d-flex align-items-center">
+                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                <i class="bi bi-cart"></i>
+                            </div>
+                            <div class="ps-3">
+                                <h6>{{ $productOrdersCount }}</h6>
+                                <span
+                                    class="text-{{ $productOrdersPercentage > 0 ? 'success' : 'danger' }} small pt-1 fw-bold">{{ round($productOrdersPercentage, 2) }}%</span>
+                                @if ($productOrdersPercentage > 0)
+                                    <span class="text-muted small pt-2 ps-1">
+                                        {{ __('Increase') }}
+                                    </span>
+                                @else
+                                    <span class="text-muted small pt-2 ps-1">
+                                        {{ __('Decrease') }}
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Product Orders Count Card -->
+            
+            <!-- Product Orders Value Card -->
+            <div class="col-xxl-3 col-md-6">
+                <div class="card info-card product-orders-value-card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ __('Product Orders Value') }} <span>| {{ __('This Month') }}</span></h5>
+                        <div class="d-flex align-items-center">
+                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                <i class="bi bi-currency-dollar"></i>
+                            </div>
+                            <div class="ps-3">
+                                <h6>${{ $productOrdersTotalValue }}</h6>
+                                <span
+                                    class="text-{{ $productOrdersValuePercentage > 0 ? 'success' : 'danger' }} small pt-1 fw-bold">{{ round($productOrdersValuePercentage, 2) }}%</span>
+                                @if ($productOrdersValuePercentage > 0)
+                                    <span class="text-muted small pt-2 ps-1">
+                                        {{ __('Increase') }}
+                                    </span>
+                                @else
+                                    <span class="text-muted small pt-2 ps-1">
+                                        {{ __('Decrease') }}
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Product Orders Value Card -->
+        </div>
+        <!-- End Detailed Orders Row -->
+        
         <div class="row">
             <!-- Left side columns -->
             <div class="col-lg-8">
@@ -122,8 +243,15 @@
                                         const dates = Object.keys(reportsData);
                                         const customersData = dates.map(date => reportsData[date].customers);
                                         const ordersCountData = dates.map(date => reportsData[date].orders);
+                                        const serviceOrdersData = dates.map(date => reportsData[date].serviceOrders);
+                                        const productOrdersData = dates.map(date => reportsData[date].productOrders);
 
-                                        const maxValue = Math.max(...customersData, ...ordersCountData);
+                                        const maxValue = Math.max(
+                                            ...customersData, 
+                                            ...ordersCountData,
+                                            ...serviceOrdersData,
+                                            ...productOrdersData
+                                        );
                                         const yaxisMax = maxValue + 10;
 
                                         new ApexCharts(document.querySelector("#reportsChart"), {
@@ -131,8 +259,14 @@
                                                 name: '{{ __('Customers') }}',
                                                 data: customersData
                                             }, {
-                                                name: '{{ __('Orders Count') }}',
+                                                name: '{{ __('Total Orders') }}',
                                                 data: ordersCountData
+                                            }, {
+                                                name: '{{ __('Service Orders') }}',
+                                                data: serviceOrdersData
+                                            }, {
+                                                name: '{{ __('Product Orders') }}',
+                                                data: productOrdersData
                                             }],
                                             chart: {
                                                 height: 350,
@@ -144,7 +278,7 @@
                                             markers: {
                                                 size: 4
                                             },
-                                            colors: ['#4154f1', '#ff771d'],
+                                            colors: ['#4154f1', '#ff771d', '#2eca6a', '#9061F9'],
                                             fill: {
                                                 type: "gradient",
                                                 gradient: {
@@ -183,11 +317,12 @@
                         </div>
                     </div>
                     <!-- End Reports -->
-                    <!-- Recent withdrawal requests -->
+                    
+                    <!-- Recent Service Orders -->
                     <div class="col-12">
                         <div class="card recent-sales overflow-auto">
                             <div class="card-body">
-                                <h5 class="card-title">{{ __('Latest Orders') }}</h5>
+                                <h5 class="card-title">{{ __('Latest Service Orders') }}</h5>
                                 <table class="table table-borderless datatable">
                                     <thead>
                                         <tr>
@@ -206,7 +341,7 @@
                                                 <td>{{ $order->service->name ?? '' }}</td>
                                                 <td>{{ $order->created_at }}</td>
                                                 <td>{{ $order->customer->name ?? '' }}</td>
-                                                <td>{{ $order->total }}</td>
+                                                <td>{{ $order->customer_accepted ? $order->total . " $" : __('Not Specified') }}</td>
                                                 <td>
                                                     <span
                                                         class="badge bg-{{ $order->status == 'approved' ? 'success' : ($order->status == 'rejected' ? 'danger' : 'warning') }} text-capitalize">
@@ -224,7 +359,57 @@
                             </div>
                         </div>
                     </div>
-                    <!-- End Recent withdrawal requests -->
+                    <!-- End Recent Service Orders -->
+                    
+                    <!-- Latest Product Orders -->
+                    <div class="col-12">
+                        <div class="card recent-sales overflow-auto">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ __('Latest Product Orders') }}</h5>
+                                <table class="table table-borderless datatable">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>{{ __('Order Number') }}</th>
+                                            <th>{{ __('Product') }}</th>
+                                            <th>{{ __('Order Date') }}</th>
+                                            <th>{{ __('Customer') }}</th>
+                                            <th>{{ __('Total') }}</th>
+                                            <th>{{ __('Status') }}</th>
+                                            <th>{{ __('Payment') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($latestProductOrders as $order)
+                                            <tr>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $order->order_number }}</td>
+                                                <td>{{ $order->product->name ?? '' }}</td>
+                                                <td>{{ $order->created_at }}</td>
+                                                <td>{{ $order->customer->name ?? '' }}</td>
+                                                <td>${{ $order->total }}</td>
+                                                <td>
+                                                    <span class="badge bg-{{ 
+                                                        $order->status == 'completed' || $order->status == 'delivered' ? 'success' : 
+                                                        ($order->status == 'canceled' ? 'danger' : 
+                                                        ($order->status == 'in_progress' ? 'info' : 'warning')) 
+                                                    }} text-capitalize">
+                                                        {{ str_replace('_', ' ', $order->status) }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-{{ $order->is_paid ? 'success' : 'warning' }}">
+                                                        {{ $order->is_paid ? __('Paid') : __('Unpaid') }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Latest Product Orders -->
                 </div>
             </div>
         </div>

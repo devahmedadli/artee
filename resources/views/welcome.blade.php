@@ -266,8 +266,8 @@
                                 <img src="{{ asset('storage/' . $service->image) }}" alt="{{ $service->name }}"
                                     class="img-fluid">
                             </div>
-                            <h4 class="mb-3">{{ $service->name }}</h4>
-                            <p>{{ $service->description }}</p>
+                            <h4 class="mb-3">{{ $service->{app()->getLocale() . '_name'} }}</h4>
+                            <p>{{ $service->{app()->getLocale() . '_description'} }}</p>
                         </div>
                     @endforeach
                 </div>
@@ -312,7 +312,7 @@
                                     <option value="">{{ __('Choose a service') }}</option>
                                     @foreach ($services as $service)
                                         <option value="{{ $service->id }}" data-price="{{ $service->price }}">
-                                            {{ $service->name }}</option>
+                                            {{ $service->{app()->getLocale() . '_name'} }}</option>
                                     @endforeach
                                 </select>
                                 <div class="invalid-feedback">

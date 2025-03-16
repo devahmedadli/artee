@@ -28,6 +28,9 @@ class HomePageController extends Controller
         // Process Hero Section
         $sections['hero'] = $this->processHeroSection($request, $sections['hero'] ?? []);
 
+        // Process Services Section
+        $sections['services'] = $this->processServicesSection($request, $sections['services'] ?? []);
+
         // Process Features Section
         $sections['features'] = $this->processFeaturesSection($request, $sections['features'] ?? []);
 
@@ -100,6 +103,39 @@ class HomePageController extends Controller
         }
 
         return $heroData;
+    }
+
+    /**
+     * Process the Services Section
+     *
+     * @param Request $request
+     * @param array $existingData
+     * @return array
+     */
+    private function processServicesSection(Request $request, array $existingData): array
+    {
+        return [
+            'title' => [
+                'en' => $request->input('services.title.en'),
+                'ar' => $request->input('services.title.ar')
+            ],
+            'subtitle' => [
+                'en' => $request->input('services.subtitle.en'),
+                'ar' => $request->input('services.subtitle.ar')
+            ],
+            'order_now' => [
+                'en' => $request->input('services.order_now.en'),
+                'ar' => $request->input('services.order_now.ar')
+            ],
+            'all_services' => [
+                'en' => $request->input('services.all_services.en'),
+                'ar' => $request->input('services.all_services.ar')
+            ],
+            'get_started' => [
+                'en' => $request->input('services.get_started.en'),
+                'ar' => $request->input('services.get_started.ar')
+            ]
+        ];
     }
 
     /**

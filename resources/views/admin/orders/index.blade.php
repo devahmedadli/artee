@@ -5,20 +5,20 @@
     <div class="card orders-list overflow-auto">
         <!-- Card body -->
         <div class="card-body">
-            <h5 class="card-title">قائمة الطلبات <span>| الكل</span></h5>
+            <h5 class="card-title">{{ __('Orders List') }} <span>| {{ __('All') }}</span></h5>
             <!-- Table with responsive wrapper -->
             <div class="table-responsive">
                 <table class="table table-borderless datatable">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>رقم الطلب</th>
-                            <th>الزبون</th>
-                            <th>المستقل</th>
-                            <th>المبلغ</th>
-                            <th>الحالة</th>
-                            <th>حالة الدفع</th>
-                            <th>الاجراء</th>
+                            <th>{{ __('Order Number') }}</th>
+                            <th>{{ __('Customer') }}</th>
+                            <th>{{ __('Freelancer') }}</th>
+                            <th>{{ __('Amount') }}</th>
+                            <th>{{ __('Status') }}</th>
+                            <th>{{ __('Payment Status') }}</th>
+                            <th>{{ __('Actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -83,32 +83,32 @@
                                 <td>
                                     <span
                                         class="badge bg-{{ $order->is_paid ? 'success' : 'danger' }}">
-                                        {{ $order->is_paid ? 'مدفوع' : 'غير مدفوع' }}
+                                        {{ $order->is_paid ? __('Paid') : __('Not Paid') }}
                                     </span>
                                 </td>
                                 <td class="text-nowrap">
                                     <a href="{{ route('orders.show', $order->id) }}" class="btn btn-primary">
-                                        عرض
+                                        {{ __('View') }}
                                     </a>
                                     {{-- archive order --}}
                                     <form action="{{ route('orders.admin-archive', $order->id) }}" method="POST"
                                         class="d-inline-block"
-                                        onsubmit="return confirm('هل أنت متأكد من أرشفة هذا الطلب؟');">
+                                        onsubmit="return confirm('{{ __('Are you sure you want to archive this order?') }}');">
                                         @csrf
                                         @method('PUT')
                                         <button type="submit" class="btn btn-secondary">
-                                            أرشيف
+                                            {{ __('Archive') }}
                                         </button>
                                     </form>
                                     @if ($order->status == 'pending')
                                         {{-- reject order --}}
                                         <form action="{{ route('orders.reject', $order->id) }}" method="POST"
                                             class="d-inline-block"
-                                            onsubmit="return confirm('هل أنت متأكد من رفض هذا الطلب؟');">
+                                            onsubmit="return confirm('{{ __('Are you sure you want to reject this order?') }}');">
                                             @csrf
                                             @method('PUT')
                                             <button type="submit" class="btn btn-warning">
-                                                رفض
+                                                {{ __('Reject') }}
                                             </button>
                                         </form>
                                     @endif

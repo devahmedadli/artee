@@ -12,7 +12,9 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             UserSeeder::class,
             ServiceSeeder::class,
-            HomePageSeeder::class,
+            ProductSeeder::class,
+            PageSeeder::class,
+            // HomePageSeeder::class,
             SiteSettingSeeder::class,
             SitePageSeeder::class,
         ]);

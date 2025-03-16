@@ -788,6 +788,113 @@
                 </div>
             </div>
 
+            <!-- Services Section -->
+            <div class="card mb-4">
+                <div class="card-header bg-light mb-3">
+                    <h5 class="card-title">{{ __('Services Section') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label">{{ __('Title (Arabic)') }}</label>
+                                <input type="text" name="services[title][ar]" class="form-control" dir="rtl"
+                                    value="{{ $page->sections['services']['title']['ar'] ?? '' }}">
+                                @error('services.title.ar')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">{{ __('Subtitle (Arabic)') }}</label>
+                                <input type="text" name="services[subtitle][ar]" class="form-control" dir="rtl"
+                                    value="{{ $page->sections['services']['subtitle']['ar'] ?? '' }}">
+                                @error('services.subtitle.ar')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label">{{ __('Title (English)') }}</label>
+                                <input type="text" name="services[title][en]" class="form-control"
+                                    value="{{ $page->sections['services']['title']['en'] ?? '' }}">
+                                @error('services.title.en')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">{{ __('Subtitle (English)') }}</label>
+                                <input type="text" name="services[subtitle][en]" class="form-control"
+                                    value="{{ $page->sections['services']['subtitle']['en'] ?? '' }}">
+                                @error('services.subtitle.en')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label class="form-label">{{ __('Order Now Button (Arabic)') }}</label>
+                                <input type="text" name="services[order_now][ar]" class="form-control" dir="rtl"
+                                    value="{{ $page->sections['services']['order_now']['ar'] ?? '' }}">
+                                @error('services.order_now.ar')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label class="form-label">{{ __('Order Now Button (English)') }}</label>
+                                <input type="text" name="services[order_now][en]" class="form-control"
+                                    value="{{ $page->sections['services']['order_now']['en'] ?? '' }}">
+                                @error('services.order_now.en')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label class="form-label">{{ __('All Services Button (Arabic)') }}</label>
+                                <input type="text" name="services[all_services][ar]" class="form-control" dir="rtl"
+                                    value="{{ $page->sections['services']['all_services']['ar'] ?? '' }}">
+                                @error('services.all_services.ar')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label class="form-label">{{ __('All Services Button (English)') }}</label>
+                                <input type="text" name="services[all_services][en]" class="form-control"
+                                    value="{{ $page->sections['services']['all_services']['en'] ?? '' }}">
+                                @error('services.all_services.en')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label class="form-label">{{ __('Get Started Button (Arabic)') }}</label>
+                                <input type="text" name="services[get_started][ar]" class="form-control" dir="rtl"
+                                    value="{{ $page->sections['services']['get_started']['ar'] ?? '' }}">
+                                @error('services.get_started.ar')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label class="form-label">{{ __('Get Started Button (English)') }}</label>
+                                <input type="text" name="services[get_started][en]" class="form-control"
+                                    value="{{ $page->sections['services']['get_started']['en'] ?? '' }}">
+                                @error('services.get_started.en')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">
                     {{ __('Save Changes') }}

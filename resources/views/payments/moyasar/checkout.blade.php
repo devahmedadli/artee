@@ -4,6 +4,7 @@
         'title' => __('Checkout'),
         'description' => __('Complete your payment'),
     ])
+    {{-- @dd($order) --}}
     <main class="py-5">
         <div class="container">
             <div class="row justify-content-center">
@@ -54,7 +55,11 @@
             description: '#{{ $order->order_number }}',
             publishable_api_key: '{{ $publishable_key }}',
             callback_url: '{{ route('payment.callback') }}',
-            methods: ['creditcard']
+            methods: ['creditcard'],
+            metadata: {
+                order_id: '{{ $order->id }}',
+                order_type: '{{ $order instanceof \App\Models\ProductOrder ? 'product' : 'service' }}'
+            }
         })
     </script>
     {{-- <script>
