@@ -187,7 +187,7 @@
                     <ul class="list-unstyled">
                         @foreach ($services as $service)
                             <li class="mb-2"><a href="{{ route('services', $service->id) }}"
-                                    class="text-white">{{ $service->name }}</a></li>
+                                    class="text-white">{{ $service->{app()->getLocale() . '_name'} }}</a></li>
                         @endforeach
                     </ul>
                 </div>

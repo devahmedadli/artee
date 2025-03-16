@@ -7,8 +7,8 @@
             <div class="col-md-6 d-flex justify-content-center align-items-center py-5 position-relative">
                 <div class="wrapper" style="width: 600px;min-width:200px;margin-top:150px; position: relative;">
                     <!-- Radial Gradient Circles -->
-                    <div class="radial-circle radial-circle-1"></div>
-                    <div class="radial-circle radial-circle-2"></div>
+                    {{-- <div class="radial-circle radial-circle-1"></div>
+                    <div class="radial-circle radial-circle-2"></div> --}}
                     <h3 class="mb-3 text-center">{{ __('Welcome Back') }}</h3>
                     <p class="text-muted text-center mb-3">{{ __('Enter your credentials below to login') }}</p>
                     <div class="mb-3">

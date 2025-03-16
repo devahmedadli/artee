@@ -14,10 +14,10 @@
                 @forelse ($services as $service)
                     <div class="col-md-4 mb-4">
                         <div class="service-icon mb-3">
-                            <img src="{{ asset('storage/' . $service->image) }}" alt="{{ $service->name }}" class="img-fluid">
+                            <img src="{{ asset('storage/' . $service->image) }}" alt="{{ $service->{app()->getLocale() . '_name'} }}" class="img-fluid">
                         </div>
-                        <h4 class="mb-3">{{ $service->name }}</h4>
-                        <p>{{ $service->description }}</p>
+                        <h4 class="mb-3">{{ $service->{app()->getLocale() . '_name'} }}</h4>
+                        <p>{{ $service->{app()->getLocale() . '_description'} }}</p>
                         <div class="text-center mt-4">
                             @auth
                                 <button type="button" class="btn btn-main" data-bs-toggle="modal"
