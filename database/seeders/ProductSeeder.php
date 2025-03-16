@@ -21,7 +21,7 @@ class ProductSeeder extends Seeder
     public function run(): void
     {
         // Create 5 products
-        for ($i = 1; $i <= 2; $i++) {
+        for ($i = 1; $i <= 3; $i++) {
             $product = Product::create([
                 'ar_name' => 'منتج ' . $i,
                 'en_name' => 'Product ' . $i,
@@ -155,7 +155,7 @@ class ProductSeeder extends Seeder
             return $key !== $customDesignIndex;
         }, ARRAY_FILTER_USE_BOTH);
         
-        $randomRequirements = array_rand($otherRequirements, 1);
+        $randomRequirements = array_rand($otherRequirements, 2);
         foreach ($randomRequirements as $index) {
             $selectedRequirements[] = $otherRequirements[$index];
         }
