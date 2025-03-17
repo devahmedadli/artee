@@ -38,7 +38,7 @@ class OrderCompletedNotification extends Notification
     public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
-            ->view('emails.customer.orders.order-completed', [
+            ->view('emails.customer.orders.completed', [
                 'order' => $this->order,
             ])
             ->subject(__('Order Completed'));

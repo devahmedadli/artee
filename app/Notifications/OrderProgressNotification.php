@@ -49,7 +49,7 @@ class OrderProgressNotification extends Notification
         // ]);
 
         return (new MailMessage)
-            ->view('emails.customer.orders.order-progress', [
+            ->view('emails.customer.orders.new-progress', [
                 'order' => $this->order,
                 'progress' => $this->progress,
             ])

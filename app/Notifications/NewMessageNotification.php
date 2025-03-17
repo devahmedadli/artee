@@ -29,7 +29,7 @@ class NewMessageNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->view('emails.customer.messages.new-message', [
+            ->view('emails.new-message', [
                 'message' => $this->message,
             ])
             ->subject(__('New Message Received'));
