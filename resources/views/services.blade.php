@@ -65,7 +65,7 @@
                         {{-- choosen service --}}
                         <div class="mb-3">
                             <label for="service" class="form-label">{{ __('Service') }}</label>
-                            <input type="text" class="form-control" id="service" value="{{ $service->name }}"
+                            <input type="text" class="form-control" id="service" value="{{ $service->{app()->getLocale() . '_name'} }}"
                                 readonly>
                         </div>
                         <div class="mb-3">

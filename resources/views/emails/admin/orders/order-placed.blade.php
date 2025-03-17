@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ __('Order Confirmation') }}</title>
+    <title>{{ __('New Order Notification') }}</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -24,24 +24,37 @@
         .header {
             text-align: center;
             padding: 20px 0;
-            border-bottom: 1px solid #f0f0f0;
+            background-color: #2c3e50;
+            color: white;
+            border-radius: 6px 6px 0 0;
+            margin-bottom: 20px;
         }
         .logo {
             max-width: 150px;
             margin-bottom: 15px;
+            filter: brightness(0) invert(1);
         }
         .title {
-            color: #2c3e50;
             font-size: 24px;
             font-weight: 600;
             margin-bottom: 5px;
         }
         .subtitle {
-            color: #7f8c8d;
             font-size: 16px;
+            opacity: 0.9;
         }
         .content {
-            padding: 30px 20px;
+            padding: 20px;
+        }
+        .alert-box {
+            background-color: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            font-weight: 600;
+            text-align: center;
+            font-size: 18px;
         }
         .greeting {
             font-size: 18px;
@@ -58,6 +71,7 @@
             border-radius: 6px;
             padding: 20px;
             margin-bottom: 25px;
+            border-left: 4px solid #3498db;
         }
         .order-details h2 {
             color: #2c3e50;
@@ -76,9 +90,12 @@
         .detail-label {
             font-weight: 600;
             color: #555;
+            width: 40%;
         }
         .detail-value {
             color: #333;
+            width: 60%;
+            text-align: right;
         }
         .total-row {
             font-size: 18px;
@@ -86,10 +103,11 @@
             margin-top: 15px;
             padding-top: 15px;
             border-top: 1px solid #eee;
+            color: #e74c3c;
         }
         .button {
             display: inline-block;
-            background-color: #3498db;
+            background-color: #27ae60;
             color: white;
             text-decoration: none;
             padding: 12px 25px;
@@ -99,7 +117,7 @@
             text-align: center;
         }
         .button:hover {
-            background-color: #2980b9;
+            background-color: #219653;
         }
         .footer {
             text-align: center;
@@ -107,13 +125,6 @@
             color: #7f8c8d;
             font-size: 14px;
             border-top: 1px solid #f0f0f0;
-        }
-        .social-links {
-            margin: 15px 0;
-        }
-        .social-link {
-            display: inline-block;
-            margin: 0 10px;
         }
         @media only screen and (max-width: 600px) {
             .container {
@@ -124,22 +135,30 @@
                 flex-direction: column;
                 margin-bottom: 15px;
             }
+            .detail-label, .detail-value {
+                width: 100%;
+                text-align: left;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <img src="https://www.artee.com.sa/images/logo.png" alt="Techs Gate Co." class="logo">
-            <h1 class="title">{{ __('Order Confirmation') }}</h1>
-            <p class="subtitle">{{ __('Thank you for your purchase!') }}</p>
+            <img src="https://www.artee.com.sa/images/logo.png" alt="Artee Team." class="logo">
+            <h1 class="title">{{ __('New Order Received') }}</h1>
+            <p class="subtitle">{{ __('Action Required') }}</p>
         </div>
         
         <div class="content">
-            <p class="greeting">{{ __('Dear :name', ['name' => $order->customer->name]) }}</p>
+            <div class="alert-box">
+                {{ __('New order requires your attention!') }}
+            </div>
+            
+            <p class="greeting">{{ __('Hello Admin') }}</p>
             
             <div class="message">
-                <p>{{ __('Thank you for your order. We are pleased to confirm that your order has been successfully placed.') }}</p>
+                <p>{{ __('A new order has been placed and requires your attention. Please review the details below.') }}</p>
             </div>
             
             <div class="order-details">
@@ -151,8 +170,18 @@
                 </div>
                 
                 <div class="detail-row">
+                    <span class="detail-label">{{ __('Customer Name:') }}</span>
+                    <span class="detail-value">{{ $order->customer->name }}</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">{{ __('Customer Email:') }}</span>
+                    <span class="detail-value">{{ $order->customer->email }}</span>
+                </div>
+                
+                <div class="detail-row">
                     <span class="detail-label">{{ __('Date of Order:') }}</span>
-                    <span class="detail-value">{{ $order->created_at->format('M d, Y') }}</span>
+                    <span class="detail-value">{{ $order->created_at->format('M d, Y - h:i A') }}</span>
                 </div>
                 
                 <div class="detail-row">
@@ -167,31 +196,20 @@
             </div>
             
             <div style="text-align: center;">
-                <a href="{{ route('customer.orders.show', ['order' => $order->id, 'type' => $type]) }}" class="button">
-                    {{ __('View Order Details') }}
+                <a href="{{ route('orders.show', ['order' => $order->id, 'type' => $type]) }}" class="button">
+                    {{ __('Process This Order') }}
                 </a>
             </div>
             
             <div class="message">
-                <p>{{ __('If you have any questions or need further assistance, please don\'t hesitate to contact us.') }}</p>
-                <p>{{ __('Thank you for choosing our services. We appreciate your business!') }}</p>
-                <p>
-                    {{ __('Best regards,') }}<br>
-                    {{ __('Artee Team.') }}
-                </p>
+                <p>{{ __('Please process this order as soon as possible to ensure customer satisfaction.') }}</p>
+                <p>{{ __('This is an automated notification. Please do not reply to this email.') }}</p>
             </div>
         </div>
         
         <div class="footer">
-            <div class="social-links">
-                <a href="https://facebook.com/arteesa" class="social-link">Facebook</a>
-                <a href="https://twitter.com/arteesa" class="social-link">Twitter</a>
-                <a href="https://instagram.com/arteesa" class="social-link">Instagram</a>
-            </div>
-            <p>
-                <a href="https://www.artee.com.sa" style="color: #3498db; text-decoration: none;">www.artee.com.sa</a>
-            </p>
-            <p>© {{ date('Y') }} Artee Team. {{ __('All rights reserved.') }}</p>
+            <p>© {{ date('Y') }} Artee Team. {{ __('Admin Portal') }}</p>
+            <p>{{ __('This email contains confidential information and is intended for admin use only.') }}</p>
         </div>
     </div>
 </body>

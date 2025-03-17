@@ -29,10 +29,9 @@ class NewMessageNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject(__('New Message Received'))
-            ->line(__('You have received a new message from ') . $this->message->sender->name)
-            ->line(__('Message: ') . \Illuminate\Support\Str::limit($this->message->body, 100))
-            ->action(__('View Message'), route('login'))
-            ->line(__('Thank you for using our application!'));
+            ->view('emails.customer.messages.new-message', [
+                'message' => $this->message,
+            ])
+            ->subject(__('New Message Received'));
     }
 } 

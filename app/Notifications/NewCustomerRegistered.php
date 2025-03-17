@@ -37,13 +37,10 @@ class NewCustomerRegistered extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->greeting('Hello ' . $notifiable->name)
-                    ->subject('New customer registered')
-                    ->line('A new customer has registered on the platform.')
-                    ->line('Name: ' . $this->customer->name)
-                    ->line('Email: ' . $this->customer->email)
-                    ->action('View customer', route('customers.show', $this->customer->id))
-                    ->line('Thank you for using our application!');
+            ->view('emails.admin.customers.new-customer', [
+                'customer' => $this->customer,
+            ])
+            ->subject(__('New customer registered'));
     }
 
     /**

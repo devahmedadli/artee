@@ -50,21 +50,17 @@ class OrderController extends Controller
         $data['customer_id'] = Auth::user()->id;
         $order = Order::create($data);
         // storing attachments and adding to order attachments table
+        if ($request->hasFile('attachments')) {
         foreach ($request->attachments as $attachment) {
             // 
             $path = $attachment->store('attachments/' . $order->id, 'public');
             $order->attachments()->create([
                 'path' => $path,
                 'name' => $attachment->getClientOriginalName(),
-            ]);
+                ]);
+            }
         }
-        // send email to customer
-        try {
-            $order->customer->notify(new OrderCreatedNotification($order, false, 'service'));
-            app(\App\Services\NotificationService::class)->notifyAdmin(new \App\Notifications\OrderCreatedNotification($order, true, 'service'));
-        } catch (\Exception $e) {
-            \Log::error('Error notifying admin: ' . $e->getMessage());
-        }
+        // send email to customer and admin via observer
 
         flash()->success(__('Order created successfully.'));
         return to_route('customer.orders.index');

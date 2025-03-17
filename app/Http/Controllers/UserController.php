@@ -10,18 +10,34 @@ use App\Http\Requests\UpdateUserRequest;
 
 class UserController extends Controller
 {
+    /**
+     * Show the users index page
+     * 
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $users = User::where('role', 'admin')->where('id', '!=', auth()->id())->get();
         return view('admin.users.index', compact('users'));
     }
 
+    /**
+     * Show the create user page
+     * 
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         $roles = Role::all();
         return view('admin.users.create', compact('roles'));
     }
 
+    /**
+     * Store a new user
+     * 
+     * @param StoreUserRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(StoreUserRequest $request)
     {
         $userData = $request->validated();
@@ -31,6 +47,12 @@ class UserController extends Controller
         return to_route('users.index')->with('success', 'User created successfully.');
     }
 
+    /**
+     * Show a user
+     * 
+     * @param User $user
+     * @return \Illuminate\View\View
+     */
     public function show(User $user)
     {
         return view('admin.users.show', compact('user'));

@@ -24,7 +24,7 @@ class StoreOrderRequest extends FormRequest
         return [
             'service_id'    => 'required|exists:services,id',
             'description'   => 'required|string',
-            'attachments'   => 'required|array',
+            'attachments'   => 'nullable|array',
             'attachments.*' => 'nullable|file|mimes:pdf,docx,doc,zip,rar,7z,png,jpg,jpeg,gif',
         ];
     }

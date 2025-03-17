@@ -49,12 +49,11 @@ class OrderProgressNotification extends Notification
         // ]);
 
         return (new MailMessage)
-            ->subject(__('New Order Progress'))
-            ->greeting(__('Dear :name', ['name' => $this->order->customer->name]))
-            ->line(__('There has been an update to your order.'))
-            ->action(__('View Order Details'), route('customer.orders.show', $this->order->id))
-            ->line(__('Thanks,'))
-            ->line(config('app.name'));
+            ->view('emails.customer.orders.order-progress', [
+                'order' => $this->order,
+                'progress' => $this->progress,
+            ])
+            ->subject(__('New Order Progress'));
     }
 
     /**

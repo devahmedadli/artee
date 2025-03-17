@@ -16,9 +16,10 @@ class OrderObserver
     public function created(ProductOrder | Order $order): void
     {
         // After creating the order
-        $order->customer->notify(new OrderCreatedNotification($order, $order instanceof ProductOrder ? 'product' : 'service'));
         try {
-            app(\App\Services\NotificationService::class)->notifyAdmin(new \App\Notifications\OrderCreatedNotification($order, true));
+            // $order->customer->notify(new OrderCreatedNotification($order, false, $order instanceof ProductOrder ? 'product' : 'service'));
+            app(\App\Services\NotificationService::class)->notifyAdmin(new \App\Notifications\OrderCreatedNotification($order, true, $order instanceof ProductOrder ? 'product' : 'service'));
+            app(\App\Services\NotificationService::class)->notifyCustomer(new \App\Notifications\OrderCreatedNotification($order, false, $order instanceof ProductOrder ? 'product' : 'service'), $order->customer->id);
         } catch (\Exception $e) {
             \Log::error('Error notifying admin: ' . $e->getMessage());
         }

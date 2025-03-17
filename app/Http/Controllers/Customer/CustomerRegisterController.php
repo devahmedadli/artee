@@ -10,6 +10,11 @@ use App\Http\Requests\RegisterCustomerRequest;
 
 class CustomerRegisterController extends Controller
 {
+    /**
+     * Show the register page
+     * 
+     * @return \Illuminate\View\View
+     */
     public function registerPage()
     {
         if (auth()->check()) {
@@ -17,6 +22,13 @@ class CustomerRegisterController extends Controller
         }
         return view('auth.customer.register');
     }
+
+    /**
+     * Register a new customer
+     * 
+     * @param RegisterCustomerRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function register(RegisterCustomerRequest $request)
     {
         $data           = $request->validated();

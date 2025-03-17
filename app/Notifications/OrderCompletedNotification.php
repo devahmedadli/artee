@@ -38,12 +38,10 @@ class OrderCompletedNotification extends Notification
     public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject(__('Order Completed'))
-            ->line(__('Your order has been completed.'))
-            ->line(__('Order Number: ') . $this->order->order_number)
-            ->line(__('Total Amount: $') . $this->order->total)
-            ->action(__('View Order'), route('orders.show', $this->order))
-            ->line(__('Thank you for using our service!'));
+            ->view('emails.customer.orders.order-completed', [
+                'order' => $this->order,
+            ])
+            ->subject(__('Order Completed'));
     }
 
     /**
